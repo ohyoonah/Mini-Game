@@ -1,43 +1,66 @@
-var canvas = document.getElementById('canvas');
-var ctx = canvas.getContext('2d');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const start = document.getElementById('start-button');
 
-canvas.width = window.innerWidth - 100;
-canvas.height = window.innerHeight - 100;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-var dino_img = new Image();
-dino_img.scr = 'dino.png';
+//start 버튼 누르면 frame 함수 실행
+start.addEventListener('click', () => {
+  start.style.display = 'none';
+  frame();
+})
+
 
 // 공룡 그리기
-var dino = {
-  x: 10,
-  y: 200,
+const dino_img = new Image();
+dino_img.src = './img/dino.png';
+
+const dino = {
+  x: 50,
+  y: 400,
   width: 50,
   height: 50,
   draw() {
     // 초록색으로
-    ctx.fillStyle = 'green';
+    ctx.fillStyle = 'gray';
     // (10,10) 좌표값에 100*100 크기의 네모
     // ctx.fillRect(10, 10, 100, 100);
-    ctx.fillRect(this.x, this.y, this.width, this.height);
-    ctx.drawImage(dino_img, this.x, this.y);
+    // ctx.fillRect(this.x, this.y, this.width, this.height);
+    // context.drawImage($image, $sx, $sy, $sWidth, $sHeight, $dx, $dy, $dWidth, $dHeight);
+    ctx.drawImage(dino_img, this.x, this.y, this.width, this.height);
+    ctx.font = "italic bold 25px 'Press Start 2P', sans-serif"; //Arial서체 없을 경우, sans-serif 적용
+    ctx.fillText("Let's Go!", 100, 100);
   }
 }
 
-var cactus_img = new Image();
-cactus_img.scr = 'cactus.png';
+const cactus_img = new Image();
+cactus_img.src = './img/cactus.png';
 
 // 장애물 그리기
+// const Cactus = {
+//   x : 700,
+//   y : 300,
+//   width : 50,
+//   height : 50,
+//   draw() {
+//     ctx.fillStyle = 'red';
+//     // ctx.fillRect(this.x, this.y, this.width, this.height);
+//     ctx.drawImage(cactus_img, this.x, this.y, this.width, this.height);
+//   }
+// }
 class Cactus {
   constructor() {
-    this.x = 500;
-    this.y = 200;
+    this.x = 700;
+    this.y = 400;
     this.width = 50;
     this.height = 50;
+
   }
   draw() {
     ctx.fillStyle = 'red';
-    ctx.fillRect(this.x, this.y, this.width, this.height);
-    ctx.drawImage(cactus_img, this.x, this.y);
+    // ctx.fillRect(this.x, this.y, this.width, this.height);
+    ctx.drawImage(cactus_img, this.x, this.y, this.width, this.height);
   }
 }
 
@@ -78,7 +101,7 @@ function frame() {
     jump_timer++; 
   }
   if(jump == false) {
-    if(dino.y < 200) {
+    if(dino.y < 400) {
       dino.y += 3;
     }
   }
@@ -90,15 +113,17 @@ function frame() {
   dino.draw();
 }
 
-frame();
 
 //충돌 확인
 function crush(dino, cactus) {
-  var x_distance = cactus.x - (dino.x + dino.width)
+  // 선인장 이미지 크기에 맞게 cactus.x에 +15 해줌
+  var x_distance = (cactus.x + 15) - (dino.x + dino.width)
   var y_distance = cactus.y - (dino.y + dino.height)
   if (x_distance < 0 && y_distance < 0) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     cancelAnimationFrame(animation);
+    const gameOver = document.getElementById('game-over');
+    gameOver.style.display = 'block';
   }
 }
 
@@ -109,3 +134,4 @@ document.addEventListener('keydown', (e) => {
     jump = true;
   }
 })
+
